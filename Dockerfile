@@ -8,7 +8,8 @@ RUN mkdir /usr/local/src && apk add binutils --no-cache\
         cmake \
         zlib-dev \
         libsodium-dev \
-        gnu-libiconv 
+        gnu-libiconv \
+        linux-headers
 
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so
 WORKDIR /usr/local/src
