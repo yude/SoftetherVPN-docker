@@ -12,6 +12,7 @@ FROM debian:bookworm AS runner
 
 COPY --from=builder /usr/local/src/vpnserver/vpnserver /usr/local/bin/
 COPY --from=builder /usr/local/src/vpnserver/vpncmd /usr/local/bin/
+COPY --from=builder /usr/local/src/vpnserver/hamcore.se2 /usr/local/bin/
 
 EXPOSE 443/tcp 992/tcp 1194/tcp 1194/udp 5555/tcp 500/udp 4500/udp
 ENTRYPOINT ["/usr/local/bin/vpnserver", "execsvc"]
