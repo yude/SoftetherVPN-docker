@@ -1,21 +1,10 @@
-FROM alpine AS builder
-RUN mkdir /usr/local/src && apk add binutils --no-cache\
-        build-base \
-        readline-dev \
-        openssl-dev \
-        ncurses-dev \
-        git \
-        cmake \
-        zlib-dev \
-        libsodium-dev \
-        gnu-libiconv \
-        linux-headers \
-        clang-dev
+FROM debian:bookworm AS builder
+RUN apt update; apt -y install build-essential openssl libreadline-dev libncurses-dev cmake libz-dev libsodium-dev git libc6-dev pkg-config libssl-dev
 
-ENV LD_PRELOAD=/usr/lib/preloadable_libiconv.so
+# ENV LD_PRELOAD=/usr/lib/preloadable_libiconv.so
 WORKDIR /usr/local/src
-RUN git clone https://github.com/SoftEtherVPN/SoftEtherVPN.git
-#RUN git clone -b ${GIT_TAG} https://github.com/SoftEtherVPN/SoftEtherVPN.git
+#RUN git clone https://github.com/SoftEtherVPN/SoftEtherVPN.git
+RUN git clone -b 5.02.5185 https://github.com/SoftEtherVPN/SoftEtherVPN.git
 ENV USE_MUSL=YES
 RUN cd SoftEtherVPN &&\
 	git submodule init &&\
@@ -23,12 +12,8 @@ RUN cd SoftEtherVPN &&\
         ./configure $TARGET_CONFIG_FLAGS &&\
 	make -C build
 
-FROM alpine
-RUN apk add --no-cache readline \
-        openssl \
-        libsodium \
-        gnu-libiconv \
-        iptables
+FROM debian:bookworm
+RUN apt update; apt -y install openssl libsodium-dev iptables libc6-dev
 ENV LD_PRELOAD=/usr/lib/preloadable_libiconv.so
 ENV LD_LIBRARY_PATH=/root
 WORKDIR /usr/local/bin
