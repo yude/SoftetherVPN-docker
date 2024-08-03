@@ -10,7 +10,6 @@ RUN make
 
 FROM debian:bookworm AS runner
 
-RUN chmod +x vpncmd
 COPY --from=builder /usr/local/src/vpnserver/vpnserver /usr/local/bin/
 COPY --from=builder /usr/local/src/vpnserver/vpncmd /usr/local/bin/
 
