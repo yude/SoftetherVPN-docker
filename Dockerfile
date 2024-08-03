@@ -11,11 +11,11 @@ RUN mkdir /usr/local/src && apk add binutils --no-cache\
         gnu-libiconv \
         linux-headers
 
-ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so
+ENV LD_PRELOAD=/usr/lib/preloadable_libiconv.so
 WORKDIR /usr/local/src
 RUN git clone https://github.com/SoftEtherVPN/SoftEtherVPN.git
 #RUN git clone -b ${GIT_TAG} https://github.com/SoftEtherVPN/SoftEtherVPN.git
-ENV USE_MUSL YES
+ENV USE_MUSL=YES
 RUN cd SoftEtherVPN &&\
 	git submodule init &&\
 	git submodule update &&\
@@ -28,8 +28,8 @@ RUN apk add --no-cache readline \
         libsodium \
         gnu-libiconv \
         iptables
-ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so
-ENV LD_LIBRARY_PATH /root
+ENV LD_PRELOAD=/usr/lib/preloadable_libiconv.so
+ENV LD_LIBRARY_PATH=/root
 WORKDIR /usr/local/bin
 VOLUME /mnt
 RUN ln -s /mnt/vpn_server.config vpn_server.config && \
