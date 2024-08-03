@@ -1,13 +1,9 @@
-version: '3'
-
 services:
   softether:
-    image: softethervpn/vpnserver:v4.39-9772-beta
-    cap_add:
-      - NET_ADMIN
+    image: ghcr.io/yude/softethervpn-docker:latest
     restart: always
     ports:
-      - 53:53
+      # - 53:53
       - 444:443
       - 992:992
       - 1194:1194/udp
@@ -15,7 +11,13 @@ services:
       - 500:500/udp
       - 4500:4500/udp
       - 1701:1701/udp
+    cap_add:
+      - SYS_ADMIN
+      - NET_ADMIN
+    security_opt:
+      - seccomp:unconfined
     volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - "/etc/localtime:/etc/localtime:ro"
       - "/etc/timezone:/etc/timezone:ro"
       - "./softether_data:/mnt"
