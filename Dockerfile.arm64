@@ -1,18 +1,15 @@
-FROM debian:bookworm AS builder
-RUN apt update; apt -y install wget build-essential
+FROM ubuntu
 
-WORKDIR /usr/local/src
-RUN wget https://jp.softether-download.com/files/softether/v4.43-9799-beta-2023.08.31-tree/Linux/SoftEther_VPN_Server/64bit_-_ARM_64bit/softether-vpnserver-v4.43-9799-beta-2023.08.31-linux-arm64-64bit.tar.gz -O se.tar.gz
-RUN tar xzvf se.tar.gz
+RUN apt update; apt -y install cmake gcc g++ make pkgconf libncurses5-dev libssl-dev libsodium-dev libreadline-dev zlib1g-dev git
 
-WORKDIR /usr/local/src/vpnserver
-RUN make
+WORKDIR /src
 
-FROM debian:bookworm AS runner
+RUN git clone https://github.com/SoftEtherVPN/SoftEtherVPN.git
 
-COPY --from=builder /usr/local/src/vpnserver/vpnserver /usr/local/bin/
-COPY --from=builder /usr/local/src/vpnserver/vpncmd /usr/local/bin/
-COPY --from=builder /usr/local/src/vpnserver/hamcore.se2 /usr/local/bin/
+WORKDIR /src/SoftEtherVPN
+RUN git submodule init && git submodule update
+RUN ./configure
+RUN make -C build
+RUN make -C build install
 
-EXPOSE 443/tcp 992/tcp 1194/tcp 1194/udp 5555/tcp 500/udp 4500/udp
-ENTRYPOINT ["/usr/local/bin/vpnserver", "execsvc"]
+ENTRYPOINT ["vpnserver", "execsvc"]
